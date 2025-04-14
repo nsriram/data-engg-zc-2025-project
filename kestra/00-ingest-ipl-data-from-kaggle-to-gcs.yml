@@ -1,0 +1,40 @@
+id: ingest-ipl-data
+namespace: ipl.pipeline
+
+tasks:
+  - id: download_ipl_data_from_kaggle
+    type: io.kestra.plugin.scripts.python.Script
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    env:
+      KAGGLE_USERNAME: "{{ secret('KAGGLE_USERNAME') }}"
+      KAGGLE_KEY: "{{ secret('KAGGLE_KEY') }}"
+    beforeCommands:
+      - pip install kaggle
+    outputFiles:
+      - "matches.csv"
+      - "deliveries.csv"
+    script: |
+      import os
+      from kaggle.api.kaggle_api_extended import KaggleApi
+
+      api = KaggleApi()
+      api.authenticate()
+      dataset = "patrickb1912/ipl-complete-dataset-20082020"
+      download_path = "."
+
+      os.makedirs(download_path, exist_ok=True)
+      api.dataset_download_files(dataset, path=download_path, unzip=True)
+      print(f"Downloaded to {download_path}")
+
+  - id: upload_matches_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.download_ipl_data_from_kaggle.outputFiles['matches.csv'] }}"
+    to: "gs://ipl_data_lake_bucket/ipl-data/raw/matches.csv"
+    contentType: "text/csv"
+
+  - id: upload_deliveries_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.download_ipl_data_from_kaggle.outputFiles['deliveries.csv'] }}"
+    to: "gs://ipl_data_lake_bucket/ipl-data/raw/deliveries.csv"
+    contentType: "text/csv"

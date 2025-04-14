@@ -1,0 +1,10 @@
+.idea
+
+ignored-files
+data
+
+terraform/kestra/.terraform
+terraform/kestra/terraform.tfvars
+terraform/kestra/.terraform.lock.hcl
+terraform/kestra/terraform.tfstate
+terraform/kestra/terraform.tfstate.backup
