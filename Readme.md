@@ -144,6 +144,9 @@ dbt run --models intermediate
 dbt run --models analytics
 ```
 
+#### 5.5 Serving the DBT docs
+`dbt docs serve --port 9090 --host 0.0.0.0`
+
 ### 6. Reports using Google Looker Studio
 
 Following reports were created using the queries below from the analytics tables created in BigQuery using DBT
