@@ -1,0 +1,35 @@
+id: move-ipl-data-to-bigquery
+namespace: ipl_data_pipeline
+
+tasks:
+  - id: load_matches_to_bigquery
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    description: "Load matches data from GCS to BigQuery"
+    from:
+      - "gs://ipl_data_lake_bucket/ipl-data/clean/matches.csv"
+    destinationTable: "data-engg-zc-2025-project.ipl_data.matches"
+    writeDisposition: WRITE_TRUNCATE
+    createDisposition: CREATE_IF_NEEDED
+    format: CSV
+    csvOptions:
+      allowJaggedRows: false
+      encoding: UTF-8
+      fieldDelimiter: ","
+      quote: "\""
+      skipLeadingRows: 1
+
+  - id: load_deliveries_to_bigquery
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    description: "Load deliveries data from GCS to BigQuery"
+    from:
+      - "gs://ipl_data_lake_bucket/ipl-data/clean/deliveries.csv"
+    destinationTable: "data-engg-zc-2025-project.ipl_data.deliveries"
+    writeDisposition: WRITE_TRUNCATE
+    createDisposition: CREATE_IF_NEEDED
+    format: CSV
+    csvOptions:
+      allowJaggedRows: false
+      encoding: UTF-8
+      fieldDelimiter: ","
+      quote: "\""
+      skipLeadingRows: 1
