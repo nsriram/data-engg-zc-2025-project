@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 ### 18-Apr
 - [x] Perform EDA to understand the data and identify null values
 - [x] Update kestra workflow to download from GCS and cleanse the data
@@ -14,8 +5,8 @@
 - [x] Provision Big query tables
 - [x] Update kestra workflow to copy data from GCS to big query
 - [x] Analyse the data using DBT
-- [ ] Create a dashboard
-- [ ] Documentation
+- [x] Create a dashboard
+- [x] Documentation, Arch and Report images
 
 ### 15-Apr
 - [x] Provision GCS bucket using terraform for storing matches, deliveries

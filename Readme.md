@@ -1,14 +1,28 @@
 # IPL Indian Premier League Data Analysis
 Project aims at analysing the IPL dataset from Kaggle. 
 
-### Infra
-The entire project is built on GCP provisioned using Terraform, Workflows in Kestra, and DBT for analysis. 
+### Architecture and Infra
+The entire project is built on GCP provisioned using Terraform, Workflows in Kestra, and DBT for analysis.
+Following shows the architecture and data pipeline design.
+
+![Architecture](images/zoomcamp-ipl-analytics-project-arch.png)
+
+Dataset provided 2 CSV files one containing specific match info and the other containing the ball by ball stat.
+The analytics data is arrived at by processing the ball by ball data of approx 27MB
 
 ### Analysis output
 3 key models are arrived at
 1. Team performances over time
 2. Top performers over time
 3. Analysis of venues
+
+#### Charts
+4 charts were created using Google Looker Studio from the analytics data created from the data engineering workflow 
+
+1. Total matches by venues
+2. Top 10 wicket takers all time
+3. Top 10 run scorers all time
+4. Top winning teams all time
 
 ## Installation 
 
@@ -130,3 +144,48 @@ dbt run --models intermediate
 dbt run --models analytics
 ```
 
+### 6. Reports using Google Looker Studio
+
+Following reports were created using the queries below from the analytics tables created in BigQuery using DBT
+
+![Report](images/zoomcamp-ipl-analytics-dashboard.png)
+
+```
+-- Total matches by venues
+
+SELECT
+  venue,
+  SUM(matches_played) AS matches_played
+FROM ipl_transformed.venue_analysis
+GROUP BY venue
+
+-- Top 10 wicket takers all time
+
+SELECT 
+  player_name, 
+  sum(primary_stat) as total_wickets
+from ipl_transformed.top_performers 
+where category='bowler' 
+group by player_name
+order by total_wickets desc
+
+-- Top 10 run scorers all time
+
+SELECT 
+  player_name, 
+  sum(primary_stat) as total_runs
+from ipl_transformed.top_performers 
+where category='batsman' 
+group by player_name
+order by total_runs desc
+
+-- Top winning teams all time
+
+SELECT 
+  team_name, 
+  sum(matches_won) as total_wins
+from ipl_transformed.team_performance 
+group by team_name
+order by total_wins DESC
+
+```
