@@ -13,7 +13,7 @@
 - [x] Update kestra workflow to upload the cleansed data to GCS
 - [x] Provision Big query tables
 - [x] Update kestra workflow to copy data from GCS to big query
-- [ ] Analyse the data using DBT
+- [x] Analyse the data using DBT
 - [ ] Create a dashboard
 - [ ] Documentation
 

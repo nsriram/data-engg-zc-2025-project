@@ -1,0 +1,14 @@
+ipl_analytics:
+  outputs:
+    dev:
+      dataset: ipl_transformed
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: <<your_key_file>>
+      location: asia-south1
+      method: service-account
+      priority: interactive
+      project: data-engg-zc-2025-project
+      threads: 4
+      type: bigquery
+  target: dev

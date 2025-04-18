@@ -1,0 +1,30 @@
+name: 'ipl_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'ipl_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  project_id: 'data-engg-zc-2025-project'
+
+models:
+  ipl_analytics:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
+    analytics:
+      +materialized: table

@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_matches
+    description: "Staging layer for matches data"
+    columns:
+      - name: match_id
+        description: "Primary key for matches"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_deliveries
+    description: "Staging layer for ball-by-ball deliveries data"
+    columns:
+      - name: match_id
+        description: "Match identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_matches')
+              field: match_id
+
+  - name: int_match_summary
+    description: "Match-level summary with innings statistics"
+    columns:
+      - name: match_id
+        description: "Primary key for matches"
+        tests:
+          - unique
+          - not_null
+
+  - name: int_player_stats
+    description: "Player statistics by season"
+    columns:
+      - name: player_name
+        description: "Player name"
+      - name: season
+        description: "IPL season"
+
+  - name: team_performance
+    description: "Team performance metrics by season"
+    columns:
+      - name: team_name
+        description: "Team name"
+      - name: season
+        description: "IPL season"
+
+  - name: venue_analysis
+    description: "Venue statistics and patterns"
+    columns:
+      - name: venue
+        description: "Stadium name"
+      - name: season
+        description: "IPL season"
+
+  - name: top_performers
+    description: "Top performers by category and season"
+    columns:
+      - name: category
+        description: "Performance category (batsman, bowler, all_rounder)"
+      - name: season
+        description: "IPL season"
+      - name: player_name
+        description: "Player name"

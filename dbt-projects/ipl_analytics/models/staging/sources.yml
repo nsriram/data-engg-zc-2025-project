@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: ipl_data
+    database: "{{ var('project_id') }}"
+    schema: ipl_data
+    tables:
+      - name: matches
+      - name: deliveries
