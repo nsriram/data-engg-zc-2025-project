@@ -1,0 +1,46 @@
+id: cleanse-ipl-data
+namespace: ipl.pipeline
+
+tasks:
+  - id: download_matches_from_gcs
+    type: io.kestra.plugin.gcp.gcs.Download
+    from: "gs://ipl_data_lake_bucket/ipl-data/raw/matches.csv"
+
+  - id: cleanse_matches_data
+    type: io.kestra.plugin.scripts.python.Script
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    beforeCommands:
+      - pip install pandas
+    outputFiles:
+      - "matches_clean.csv"
+    script: |
+      import pandas as pd
+      import os
+
+      matches_df = pd.read_csv("{{ outputs.download_matches_from_gcs["uri"] }}")
+      venue_city_map = {
+          'Dubai International Cricket Stadium': 'Dubai',
+          'Sharjah Cricket Stadium': 'Sharjah'
+      }
+      for venue, city in venue_city_map.items():
+          matches_df.loc[(matches_df['venue'] == venue) & (matches_df['city'].isna()), 'city'] = city
+      os.makedirs(".", exist_ok=True)
+      matches_df.to_csv("./matches_clean.csv", index=False)
+      outputs = {"clean_matches_path": "./matches_clean.csv"}
+
+  - id: upload_clean_matches_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.cleanse_matches_data.outputFiles['matches_clean.csv'] }}"
+    to: "gs://ipl_data_lake_bucket/ipl-data/clean/matches.csv"
+    contentType: "text/csv"
+
+  - id: download_deliveries_from_gcs
+    type: io.kestra.plugin.gcp.gcs.Download
+    from: "gs://ipl_data_lake_bucket/ipl-data/raw/deliveries.csv"
+
+  - id: upload_deliveries_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.download_deliveries_from_gcs['uri'] }}"
+    to: "gs://ipl_data_lake_bucket/ipl-data/clean/deliveries.csv"
+    contentType: "text/csv"
