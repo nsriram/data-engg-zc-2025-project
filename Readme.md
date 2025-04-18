@@ -145,7 +145,10 @@ dbt run --models analytics
 ```
 
 #### 5.5 Serving the DBT docs
-`dbt docs serve --port 9090 --host 0.0.0.0`
+```
+dbt docs generate
+dbt docs serve --port 9090 --host 0.0.0.0
+```
 
 ### 6. Reports using Google Looker Studio
 
